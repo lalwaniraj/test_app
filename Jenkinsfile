@@ -9,7 +9,8 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/lalwaniraj/test_app.git'
+                git branch: 'main',
+                    url: 'https://github.com/lalwaniraj/test_app.git'
             }
         }
 
@@ -27,7 +28,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh '''
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push $IMAGE_NAME
                     '''
                 }
@@ -35,3 +36,4 @@ pipeline {
         }
     }
 }
+
