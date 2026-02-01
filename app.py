@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hello from LOCAL Ubuntu VM 🚀"
+    return "Hello from GitHub Stage"
 
 @app.route("/health")
 def health():
