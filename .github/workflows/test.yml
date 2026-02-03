@@ -29,7 +29,14 @@ jobs:
           username: ${{ secrets.UBUNTU_USER }}
           key: ${{ secrets.UBUNTU_KEY }}
           script: |
+            echo "Pulling latest image"
             docker pull ${{ secrets.DOCKER_USER }}/test_app2:latest
-            docker stop test_app2 || true
-            docker rm test_app2 || true
-            docker run -d -p 80:5000 --name test_app2 ${{ secrets.DOCKER_USER }}/test_app2:latest
+
+            echo "Stopping any container using port 80"
+            docker ps --filter "publish=80" -q | xargs -r docker rm -f
+
+            echo "Starting new container"
+            docker run -d \
+              --name test_app2 \
+              -p 80:5000 \
+              ${{ secrets.DOCKER_USER }}/test_app2:latest
