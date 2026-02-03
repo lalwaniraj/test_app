@@ -1,13 +1,16 @@
 from flask import Flask, jsonify
 from datetime import datetime
+import socket
 
 app = Flask(__name__)
 
-APP_NAME = "CI/CD Demo App"
-APP_VERSION = "1.0.0"
+APP_NAME = "CI/CD Deployment Dashboard"
+APP_VERSION = "2.0.0"
 
 @app.route("/")
 def home():
+    hostname = socket.gethostname()
+
     return f"""
     <!DOCTYPE html>
     <html>
@@ -15,41 +18,82 @@ def home():
         <title>{APP_NAME}</title>
         <style>
             body {{
-                font-family: Arial, sans-serif;
-                background-color: #0f172a;
-                color: #e5e7eb;
+                margin: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #fdfbfb, #ebedee);
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }}
+
+            .card {{
+                background: #ffffff;
+                padding: 45px;
+                border-radius: 16px;
+                width: 65%;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
                 text-align: center;
-                padding-top: 80px;
             }}
-            .box {{
-                background: #111827;
-                padding: 40px;
-                border-radius: 12px;
-                width: 60%;
-                margin: auto;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            }}
+
             h1 {{
-                color: #38bdf8;
+                color: #2563eb;
+                margin-bottom: 10px;
             }}
+
+            .badge {{
+                display: inline-block;
+                background: #dcfce7;
+                color: #166534;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }}
+
             p {{
                 font-size: 18px;
+                color: #374151;
             }}
+
+            .info {{
+                margin-top: 25px;
+                text-align: left;
+                background: #f9fafb;
+                padding: 20px;
+                border-radius: 12px;
+                font-size: 16px;
+            }}
+
+            .info span {{
+                font-weight: bold;
+                color: #111827;
+            }}
+
             .footer {{
-                margin-top: 20px;
+                margin-top: 30px;
                 font-size: 14px;
-                color: #9ca3af;
+                color: #6b7280;
             }}
         </style>
     </head>
     <body>
-        <div class="box">
-            <h1>🚀 CI/CD Pipeline Successful</h1>
+        <div class="card">
+            <div class="badge">DEPLOYMENT SUCCESS</div>
+            <h1>✅ CI/CD Pipeline Completed</h1>
+
             <p>Hello Rajkumar 👋</p>
-            <p>Your Flask application has been deployed successfully via Jenkins & Docker.</p>
-            <p><b>Version:</b> {APP_VERSION}</p>
+            <p>Your application is live on a new machine.</p>
+
+            <div class="info">
+                <p><span>Application:</span> {APP_NAME}</p>
+                <p><span>Version:</span> {APP_VERSION}</p>
+                <p><span>Host:</span> {hostname}</p>
+                <p><span>Deployed At:</span> {datetime.utcnow()} UTC</p>
+            </div>
+
             <div class="footer">
-                Deployed at {datetime.utcnow()} UTC
+                Powered by Flask • Jenkins • Docker • AWS
             </div>
         </div>
     </body>
@@ -60,8 +104,9 @@ def home():
 def health():
     return jsonify(
         status="UP",
-        app=APP_NAME,
-        version=APP_VERSION
+        service=APP_NAME,
+        version=APP_VERSION,
+        timestamp=datetime.utcnow().isoformat()
     ), 200
 
 if __name__ == "__main__":
