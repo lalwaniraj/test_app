@@ -10,6 +10,7 @@ APP_VERSION = "4.0.0"
 @app.route("/")
 def home():
     hostname = socket.gethostname()
+    current_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
     return f"""
     <!DOCTYPE html>
@@ -71,3 +72,31 @@ def home():
             .item {{
                 background: rgba(255, 255, 255, 0.06);
                 padding: 16px;
+                border-radius: 12px;
+                border: 1px solid rgba(168, 85, 247, 0.25);
+            }}
+
+            .label {{
+                font-size: 14px;
+                color: #a78bfa;
+            }}
+
+            .value {{
+                font-size: 16px;
+                font-weight: bold;
+                margin-top: 4px;
+            }}
+        </style>
+    </head>
+
+    <body>
+        <div class="panel">
+            <h1>{APP_NAME}</h1>
+            <div class="status">DEPLOYED SUCCESSFULLY</div>
+            <p>Modern CI/CD Pipeline • Docker • GitHub Actions • AWS EC2</p>
+
+            <div class="grid">
+                <div class="item">
+                    <div class="label">Version</div>
+                    <div class=
+
