@@ -5,7 +5,7 @@ import socket
 app = Flask(__name__)
 
 APP_NAME = "CI/CD Deployment Dashboard"
-APP_VERSION = "2.0.0"
+APP_VERSION = "3.0.0"
 
 @app.route("/")
 def home():
