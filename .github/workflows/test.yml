@@ -1,4 +1,4 @@
-name: Test SSH to Ubuntu EC2
+name: CI-CD Docker Deploy to Ubuntu EC2
 
 on:
   push:
@@ -6,14 +6,30 @@ on:
       - main
 
 jobs:
-  ssh-test:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test SSH
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/test_app:latest .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/test_app:latest
+
+      - name: Deploy to Ubuntu EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.UBUNTU_HOST }}
           username: ${{ secrets.UBUNTU_USER }}
           key: ${{ secrets.UBUNTU_KEY }}
-          script: echo "SSH OK"
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/test_app:latest
+            docker stop test_app || true
+            docker rm test_app || true
+            docker run -d -p 80:5000 --name test_app ${{ secrets.DOCKER_USERNAME }}/test_app:latest
