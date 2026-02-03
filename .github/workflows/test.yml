@@ -32,4 +32,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USER }}/test_app2:latest
             docker stop test_app2 || true
             docker rm test_app2 || true
-            docker run -d -p 80:5000 --name test_app ${{ secrets.DOCKER_USER }}/test_app2:latest
+            docker run -d -p 80:5000 --name test_app2 ${{ secrets.DOCKER_USER }}/test_app2:latest
